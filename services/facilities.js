@@ -13,6 +13,7 @@ function reqData(req)
         ATM_CARD: req.body.ATM_CARD,
         CONSENT_NEW_PRODUCT: req.body.CONSENT_NEW_PRODUCT,
         ADDON_CARD: req.body.ADDON_CARD,
+        IMPS: req.body.IMPS,
         APPLICANT1_NAME: req.body.APPLICANT1_NAME,
         APPLICANT2_NAME: req.body.APPLICANT2_NAME,
         APPLICANT3_NAME: req.body.APPLICANT3_NAME,

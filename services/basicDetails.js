@@ -105,6 +105,20 @@ function reqData(req) {
         LICENSE_NO_1:req.body.LICENSE_NO_1,
         LICENSE_NO_2:req.body.LICENSE_NO_2,
 
+        // Feild addition 20-03-2024 
+        JOINT_APP_1_TITLE : req.body.JOINT_APP_1_TITLE,
+        JOINT_APP_1_F_NAME : req.body.JOINT_APP_1_F_NAME,
+        JOINT_APP_1_M_NAME : req.body.JOINT_APP_1_M_NAME,
+        JOINT_APP_1_L_NAME : req.body.JOINT_APP_1_L_NAME,
+        JOINT_APP_2_TITLE : req.body.JOINT_APP_2_TITLE,
+        JOINT_APP_2_F_NAME : req.body.JOINT_APP_2_F_NAME,
+        JOINT_APP_2_M_NAME : req.body.JOINT_APP_2_M_NAME,
+        JOINT_APP_2_L_NAME : req.body.JOINT_APP_2_L_NAME,
+        NAREGA_JOB_CARD : req.body.NAREGA_JOB_CARD,
+        OTHER_DOC_NUMBER : req.body.OTHER_DOC_NUMBER,
+        ID_NUMBER : req.body.ID_NUMBER
+
+
     }
 
     return data;
@@ -203,11 +217,11 @@ function getAllApplicantsInfo(req) {
 
 function getCommonApplicantInfo(req) {
     let data = {
-        RISK_CATEGORY: 'A',
+        // RISK_CATEGORY: 'A',
         RELIGION: 'A',
         CASTE: 'A',
-        MARITAL_STATUS: 'M',
-        EDUCATION: 'S',
+        // MARITAL_STATUS: 'M',
+        EDUCATION: 'A',
         BLOOD_TYPE: 'A',
         GENDER: "M",
         GUARDIAN_RELATION: 'A',
@@ -284,7 +298,7 @@ exports.create = async (req, res) => {
 
         let basicInsert = await db.executeQueryDataAsyncAwait(q, data, supportKey);
 
-        const q_tab = `insert into frictionless_account_opening.extra_information (APPLICANT_ID, TAB_ID) select ${basicInsert.insertId}, ID from tab_master`
+        const q_tab = `insert into extra_information (APPLICANT_ID, TAB_ID) select ${basicInsert.insertId}, ID from tab_master`
 
         await db.executeQueryAsyncAwait(q_tab, supportKey);
 

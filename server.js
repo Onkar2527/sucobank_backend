@@ -10,7 +10,31 @@ const bodyParser = require('body-parser')
 const port = process.env.PORT;
 const hostname = process.env.HOST_NAME
 const path = require('path')
-const httpServer = http.createServer(app)
+// const httpServer = http.createServer(app)
+
+const is_ssl = process.env.IS_SSL;
+var fs = require('fs');
+
+
+const server = {}
+
+if (is_ssl) {
+    
+    var key = fs.readFileSync("./utilities/webkey.key");
+    var cert = fs.readFileSync("./utilities/webcert.crt");
+    var cacert = fs.readFileSync("./utilities/webca.crt");
+    var options = {
+        key: key,
+        cert: cert,
+        ca: cacert,
+        requestCert: false,
+        rejectUnauthorized: true
+    };
+     Server = https.createServer(options, app)
+}
+else {
+     Server = http.createServer(app)
+}
 
 
 // const tokentest = require('./services/list_api/api').getJWTToken
@@ -39,7 +63,7 @@ app.disable('x-powered-by');
 app.use('/', globalRoutes)
 
 
-httpServer.listen(port, hostname, async () => {
+Server.listen(port, hostname, async () => {
     console.log(`Server listening on http://${hostname}:${port}`);
     // let token = await tokentest();
     // console.log("token", token);

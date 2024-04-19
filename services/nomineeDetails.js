@@ -16,7 +16,11 @@ function reqData(req)
             NOMINEE_MIDDLE_NAME : req.body.NOMINEE_MIDDLE_NAME,
             NOMINEE_LAST_NAME : req.body.NOMINEE_LAST_NAME,
             NOMINEE_DOB : req.body.NOMINEE_DOB,
-            NOMINEE_AGE : req.body.NOMINEE_AGE
+            NOMINEE_AGE : req.body.NOMINEE_AGE,
+
+            //20-03-2024
+            NOMINEE_CUSTOMER_ID : req.body.NOMINEE_CUSTOMER_ID,
+            APOINTED_PERSON_AGE : req.body.APOINTED_PERSON_AGE
         
     }
 
