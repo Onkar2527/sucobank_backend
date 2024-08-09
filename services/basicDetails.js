@@ -562,6 +562,10 @@ exports.getAll = (req, res) => {
     else
         criteria = filter + "  order by " + sortKey + " " + sortValue;
 
+    if (user_data.ROLE_ID == 4) {
+        criteria = filter;
+    }
+
     let countCriteria = filter;
 
     db.executeQuery(`select count(*) as cnt from basic_details where 1 ` + countCriteria, supportKey, (error, resultCount) => {
