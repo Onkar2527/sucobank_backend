@@ -99,24 +99,24 @@ function reqData(req) {
         OTP_AUTH_1: req.body.OTP_AUTH_1,
         OTP_AUTH_2: req.body.OTP_AUTH_2,
 
-        VOTER_ID_2:req.body.VOTER_ID_2,
+        VOTER_ID_2: req.body.VOTER_ID_2,
         VOTER_ID_1: req.body.VOTER_ID_1,
 
-        LICENSE_NO_1:req.body.LICENSE_NO_1,
-        LICENSE_NO_2:req.body.LICENSE_NO_2,
+        LICENSE_NO_1: req.body.LICENSE_NO_1,
+        LICENSE_NO_2: req.body.LICENSE_NO_2,
 
         // Feild addition 20-03-2024 
-        JOINT_APP_1_TITLE : req.body.JOINT_APP_1_TITLE,
-        JOINT_APP_1_F_NAME : req.body.JOINT_APP_1_F_NAME,
-        JOINT_APP_1_M_NAME : req.body.JOINT_APP_1_M_NAME,
-        JOINT_APP_1_L_NAME : req.body.JOINT_APP_1_L_NAME,
-        JOINT_APP_2_TITLE : req.body.JOINT_APP_2_TITLE,
-        JOINT_APP_2_F_NAME : req.body.JOINT_APP_2_F_NAME,
-        JOINT_APP_2_M_NAME : req.body.JOINT_APP_2_M_NAME,
-        JOINT_APP_2_L_NAME : req.body.JOINT_APP_2_L_NAME,
-        NAREGA_JOB_CARD : req.body.NAREGA_JOB_CARD,
-        OTHER_DOC_NUMBER : req.body.OTHER_DOC_NUMBER,
-        ID_NUMBER : req.body.ID_NUMBER
+        JOINT_APP_1_TITLE: req.body.JOINT_APP_1_TITLE,
+        JOINT_APP_1_F_NAME: req.body.JOINT_APP_1_F_NAME,
+        JOINT_APP_1_M_NAME: req.body.JOINT_APP_1_M_NAME,
+        JOINT_APP_1_L_NAME: req.body.JOINT_APP_1_L_NAME,
+        JOINT_APP_2_TITLE: req.body.JOINT_APP_2_TITLE,
+        JOINT_APP_2_F_NAME: req.body.JOINT_APP_2_F_NAME,
+        JOINT_APP_2_M_NAME: req.body.JOINT_APP_2_M_NAME,
+        JOINT_APP_2_L_NAME: req.body.JOINT_APP_2_L_NAME,
+        NAREGA_JOB_CARD: req.body.NAREGA_JOB_CARD,
+        OTHER_DOC_NUMBER: req.body.OTHER_DOC_NUMBER,
+        ID_NUMBER: req.body.ID_NUMBER
 
 
     }
@@ -231,7 +231,7 @@ function getCommonApplicantInfo(req) {
         NATURE_OF_BUSINESS: ' ',
         SOURCE_OF_FUNDS: ' ',
         NATIONALITY: 'A',
-        FATHER_OR_SPOUSE:'F'
+        FATHER_OR_SPOUSE: 'F'
     }
 
     return data;
@@ -488,9 +488,27 @@ exports.update = (req, res) => {
 
 }
 
+function convertDate(date = null) {
+    if (date)
+        return new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+    else
+        return new Date().toISOString().slice(0, 19).replace('T', ' ');
+}
+
 exports.getAll = (req, res) => {
 
     let user_data = req.body.user_details;
+
+    let userFilter = req.body.filter;
+
+    let userFilterStr =
+        `
+    ${userFilter.BRANCH_ID ? ` AND CREATED_BRANCH_ID = ${userFilter.BRANCH_ID}` : ''}
+    ${userFilter.TRACK_ID ? ` AND TRACK_ID = ${userFilter.TRACK_ID}` : ''}
+    ${userFilter.START_DATE ? ` AND CAST(APPLICATION_DATE AS DATE) >= CAST('${convertDate(userFilter.START_DATE)}' AS DATE)` : ''}
+    ${userFilter.END_DATE ? ` AND CAST(APPLICATION_DATE AS DATE) <= CAST('${convertDate(userFilter.END_DATE)}' AS DATE)` : ''}
+    `
+
 
     const supportKey = req.header['supportkey'];
 
@@ -533,6 +551,10 @@ exports.getAll = (req, res) => {
 
     else if (user_data.ROLE_ID == 3) {
         filter = verifierFilter;
+    }
+
+    else if (user_data.ROLE_ID == 4) {
+        filter = userFilterStr;
     }
 
     if (pageIndex && pageSize)
