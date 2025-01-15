@@ -535,11 +535,21 @@ exports.getAll = (req, res) => {
 
     let branchFilter = ` AND CREATED_BRANCH_ID = ${user_data.BRANCH_ID}`;
 
-    let chakerFilter = ` AND MAKER_USER_ID = ${user_data.USER_ID} ${branchFilter}`;
+    let chakerFilter = ` AND MAKER_USER_ID = ${user_data.USER_ID}  ${userFilter.TRACK_ID ? ` AND TRACK_ID = ${userFilter.TRACK_ID}` : ''}
+    ${userFilter.START_DATE ? ` AND CAST(APPLICATION_DATE AS DATE) >= CAST('${convertDate(userFilter.START_DATE)}' AS DATE)` : ''}
+    ${userFilter.END_DATE ? ` AND CAST(APPLICATION_DATE AS DATE) <= CAST('${convertDate(userFilter.END_DATE)}' AS DATE)` : ''}
+     ${branchFilter}`;
 
-    let makerFilter = ` AND CHACKER_USER_ID = ${user_data.USER_ID} ${branchFilter}`;
+    let makerFilter = ` AND CHACKER_USER_ID = ${user_data.USER_ID}  ${userFilter.TRACK_ID ? ` AND TRACK_ID = ${userFilter.TRACK_ID}` : ''}
+    ${userFilter.START_DATE ? ` AND CAST(APPLICATION_DATE AS DATE) >= CAST('${convertDate(userFilter.START_DATE)}' AS DATE)` : ''}
+    ${userFilter.END_DATE ? ` AND CAST(APPLICATION_DATE AS DATE) <= CAST('${convertDate(userFilter.END_DATE)}' AS DATE)` : ''}
+     ${branchFilter}`;
 
-    let verifierFilter = ` AND VERIFIER_USER_ID = ${user_data.USER_ID}`;
+    let verifierFilter = ` AND VERIFIER_USER_ID = ${user_data.USER_ID} ${userFilter.TRACK_ID ? ` AND TRACK_ID = ${userFilter.TRACK_ID}` : ''}
+    ${userFilter.BRANCH_ID ? ` AND CREATED_BRANCH_ID = ${userFilter.BRANCH_ID}` : ''}
+    ${userFilter.START_DATE ? ` AND CAST(APPLICATION_DATE AS DATE) >= CAST('${convertDate(userFilter.START_DATE)}' AS DATE)` : ''}
+    ${userFilter.END_DATE ? ` AND CAST(APPLICATION_DATE AS DATE) <= CAST('${convertDate(userFilter.END_DATE)}' AS DATE)` : ''}`
+    
 
     if (user_data.ROLE_ID == 1) {
         filter = chakerFilter;
@@ -561,10 +571,6 @@ exports.getAll = (req, res) => {
         criteria = filter + "  order by " + sortKey + " " + sortValue + " LIMIT " + start + "," + end;
     else
         criteria = filter + "  order by " + sortKey + " " + sortValue;
-
-    if (user_data.ROLE_ID == 4) {
-        criteria = filter;
-    }
 
     let countCriteria = filter;
 
@@ -591,7 +597,8 @@ exports.getAll = (req, res) => {
                         "code": 200,
                         "message": "ok",
                         "count": resultCount[0] ? resultCount[0].cnt : 0,
-                        "data": results
+                        "data": results,
+                        "criteria": criteria
                     })
                 }
             })
