@@ -19,7 +19,9 @@ var fs = require('fs');
 const server = {}
 
 if (is_ssl) {
-    
+    Server = http.createServer(app)
+}
+else {
     var key = fs.readFileSync("./utilities/webkey.key");
     var cert = fs.readFileSync("./utilities/webcert.crt");
     var cacert = fs.readFileSync("./utilities/webca.crt");
@@ -31,9 +33,6 @@ if (is_ssl) {
         rejectUnauthorized: true
     };
      Server = https.createServer(options, app)
-}
-else {
-     Server = http.createServer(app)
 }
 
 
