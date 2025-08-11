@@ -28,7 +28,7 @@ exports.executeQueryData = (query, data, supportKey, callback) => {
             console.log(query, data);
             connection.query(query, data, callback);
             connection.on('error', function (error) {
-
+            console.log("Con", connection);
                 throw error;
                 return;
             });
@@ -45,6 +45,34 @@ exports.executeQueryData = (query, data, supportKey, callback) => {
     }
 }
 
+
+
+// exports.executeQueryData = (query, data, supportKey, callback) => {
+//     dbConfig.getConnection((error, connection) => {
+//         if (error) {
+//             console.error("Connection error:", error);
+//             return callback(error, null);
+//         }
+
+//         console.log(query, data);
+
+//         connection.query(query, data, (err, results) => {
+//             // ✅ Always release the connection AFTER the query
+//             connection.release();
+
+//             if (err) {
+//                 console.error("Query error:", err);
+//                 return callback(err, null);
+//             }
+
+//             callback(null, results);
+//         });
+
+//         // ❌ DO NOT add `connection.on('error')` inside here
+//     });
+// };
+
+
 exports.executeQuery = (query, supportKey, callback) => {
     try {
         dbConfig.getConnection(function (error, connection) {
@@ -52,7 +80,7 @@ exports.executeQuery = (query, supportKey, callback) => {
             if (error) {
                 throw error;
             }
-
+           console.log("Con", connection);
             connection.query(query, callback);
 
             connection.release();

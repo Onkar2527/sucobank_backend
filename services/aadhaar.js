@@ -146,24 +146,79 @@ exports.update = async (req, res) => {
             address_result = await db.executeQueryDataAsyncAwait(`insert into aadhaar_address set ?`, data.ADDRESS_ID, supportKey);
             data.ADDRESS_ID = address_result.insertId;
         }
-        else{
-            await db.executeQueryDataAsyncAwait(`update aadhaar_address set ? where ID = ?`, [data.ADDRESS_ID[0],data.ADDRESS_ID[0].ID], supportKey);
+        else {
+            await db.executeQueryDataAsyncAwait(`update aadhaar_address set ? where ID = ?`, [data.ADDRESS_ID[0], data.ADDRESS_ID[0].ID], supportKey);
             data.ADDRESS_ID = data.ADDRESS_ID[0].ID;
         }
 
-        await db.executeQueryDataAsyncAwait(`update aadhaar_verified_list set ? where ID = ?`, [data,ID], supportKey);
+        await db.executeQueryDataAsyncAwait(`update aadhaar_verified_list set ? where ID = ?`, [data, ID], supportKey);
 
 
         res.send({
-            "code":200
+            "code": 200
         })
     }
     catch (error) {
         console.log(error);
         res.send({
             "code": 400,
-            "message":"Failed to update aadhaar info"
+            "message": "Failed to update aadhaar info"
         })
     }
 
+}
+
+
+exports.savePANComprehensiveData = (req, res) => {
+    try {
+        let data = req.body;
+        let supportKey = req.headers['supportKey']
+        db.executeQueryData(`insert into pan_comprehensive set ?`, data, supportKey, (error, result) => {
+            if (error) {
+                console.log("error ", error);
+                res.send({
+                    "code": 400,
+                    "message": "Failed to save pan comprehensive data",
+                    "error": error.message
+                })
+
+            }
+            else {
+                res.send({
+                    "code": 200,
+                    "message": "ok"
+                })
+            }
+        })
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+exports.getPanComprehensiveData = (req, res) => {
+    try {
+        let pan_no = req.body.pan_number;
+        let supportKey = req.headers['supportKey']
+        db.executeQueryData(`select * from pan_comprehensive where pan_number = ?`, pan_no, supportKey, (error, result) => {
+            if (error) {
+                console.log("error", error);
+                res.send({
+                    "code": "code",
+                    "message": "Failed to get data"
+                })
+            }
+            else{
+                res.send({
+                    "code": 200,
+                    "message": "ok",
+                    "data": result
+                })
+            }
+        })
+
+    } catch (error) {
+        console.log("err", error);
+
+    }
 }

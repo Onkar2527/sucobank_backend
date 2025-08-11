@@ -50,11 +50,11 @@ exports.config = {
         database_config: {
             user: 'root',
             database_type: "mysql",
-            host: "167.71.234.110",
+            host: "localhost",
             port: "3306",
             database_name: "list_cbs_masters",
             ispass: true,
-            password: 'kredpool'
+            password: 'Kp@23'
         },
         api: {
             host: "http://103.42.162.39",
