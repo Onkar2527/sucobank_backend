@@ -12,16 +12,14 @@ const hostname = process.env.HOST_NAME
 const path = require('path')
 // const httpServer = http.createServer(app)
 
-const is_ssl = process.env.IS_SSL;
+const is_ssl = process.env.IS_SSL === 'true' || process.env.IS_SSL === '1' || process.env.IS_HTTPS === 'true' || process.env.IS_HTTPS === '1';
 var fs = require('fs');
 
 
-const server = {}
+let Server;
 
 if (is_ssl) {
-    Server = http.createServer(app)
-}
-else {
+    const https = require('https');
     var key = fs.readFileSync("./utilities/webkey.key");
     var cert = fs.readFileSync("./utilities/webcert.crt");
     var cacert = fs.readFileSync("./utilities/webca.crt");
@@ -32,7 +30,10 @@ else {
         requestCert: false,
         rejectUnauthorized: true
     };
-     Server = https.createServer(options, app)
+    Server = https.createServer(options, app);
+}
+else {
+    Server = http.createServer(app);
 }
 
 
