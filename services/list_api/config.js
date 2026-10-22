@@ -27,11 +27,11 @@ exports.config = {
         database_config: {
             user: 'root',
             database_type: "mysql",
-            host: "localhost",
+            host: "3.109.151.234",
             port: "",
             database_name: "list_cbs_masters",
             ispass: true,
-            password: 'No.5670@'
+            password: 'SucoBank@450'
         },
         api: {
             host: "http://103.42.162.39",
