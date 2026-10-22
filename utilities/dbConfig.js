@@ -9,26 +9,29 @@ var config = {
     timezone: "+00:00" ,
     multipleStatements: true,
     charset: 'UTF8_GENERAL_CI',
-    port:process.env.MYSQL_PORT,
-    dateStrings: true
-
-}
-
-
+    port: process.env.MYSQL_PORT,
+    dateStrings: true,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10000,
+    waitForConnections: true,
+    queueLimit: 0
+};
 
 var pool  = mysql.createPool(config);
-
 
 pool.on('connection', function (connection) {
     console.log('DB Connection established');
   
     connection.on('error', function (error) {
-      console.error(new Date(), 'MySQL error', error.code);
+      console.error(new Date(), 'MySQL connection error', error.code || error);
     });
     connection.on('close', function (error) {
-      console.error(new Date(), 'MySQL close', error);
+      console.error(new Date(), 'MySQL connection close', error);
     });
-  
-  });
+});
+
+pool.on('error', function (error) {
+    console.error(new Date(), 'MySQL Pool error', error.code || error);
+});
 
 module.exports = pool;

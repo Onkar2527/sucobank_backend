@@ -9,7 +9,7 @@ let connection
 const mode = config.mode;
 
 function connect() {
-    let promise = new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         try {
             const database = {
                 user: config[mode].database_config.user,
@@ -17,20 +17,19 @@ function connect() {
                 database: config[mode].database_config.database_name,
                 host: config[mode].database_config.host,
                 port: config[mode].database_config.port,
-                namedPlaceholders: true
-            }
-            connection = await mysql.createConnection(database);
-
-            resolve(connection)
+                namedPlaceholders: true,
+                waitForConnections: true,
+                connectionLimit: 10,
+                enableKeepAlive: true,
+                keepAliveInitialDelay: 10000
+            };
+            connection = mysql.createPool(database);
+            resolve(connection);
         }
         catch (error) {
-            // console.log(error);
             reject(error);
         }
-
-    })
-
-    return promise;
+    });
 }
 
 

@@ -60,11 +60,27 @@ app.use(helmet());
 app.disable('x-powered-by');
 
 
-app.use('/', globalRoutes)
+app.use('/', globalRoutes);
 
+// Global express error handler to prevent crashing on route errors
+app.use((err, req, res, next) => {
+    console.error("Unhandled Route Error:", err);
+    if (!res.headersSent) {
+        res.status(500).json({ code: 500, message: "Internal server error" });
+    }
+});
+
+// Process-level crash prevention
+process.on('uncaughtException', (err) => {
+    console.error(new Date(), 'Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error(new Date(), 'Unhandled Rejection at:', promise, 'reason:', reason);
+});
 
 Server.listen(port, hostname, async () => {
     console.log(`Server listening on http://${hostname}:${port}`);
     // let token = await tokentest();
     // console.log("token", token);
-})
+});
